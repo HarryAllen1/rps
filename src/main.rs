@@ -157,10 +157,11 @@ fn capitalize_first_letter(str: String) -> String {
 }
 
 fn calculate_percentage_won(past_games: Vec<GameOutcome>) -> f32 {
+    // prevent dividing by zero
     if past_games.len() == 0 {
         return 0.0;
     }
-    // This could be a one-liner, but i need those iteration points.
+
     let mut past_game_win_count = 0;
 
     for game in past_games.iter() {
