@@ -73,7 +73,8 @@ fn main() {
                     GameResult::Win => {
                         println!("The computer chose {}.", move_to_str(&computer_move));
                         println!(
-                            "You win! {} beats {}.",
+                            "{} {} beats {}.",
+                            "You win!".green(),
                             capitalize_first_letter(move_to_str(&player_move)),
                             move_to_str(&computer_move)
                         );
@@ -81,14 +82,19 @@ fn main() {
                     GameResult::Loss => {
                         println!("The computer chose {}.", move_to_str(&computer_move));
                         println!(
-                            "You lose! {} beats {}.",
+                            "{} {} beats {}.",
+                            "You lose!".red(),
                             capitalize_first_letter(move_to_str(&computer_move)),
                             move_to_str(&player_move)
                         );
                     }
                     GameResult::Tie => {
                         println!("The computer chose {}.", move_to_str(&computer_move));
-                        println!("You tied! You both chose {}.", move_to_str(&player_move));
+                        println!(
+                            "{} You both chose {}.",
+                            "You tied!".yellow(),
+                            move_to_str(&player_move)
+                        );
                     }
                 }
             }
