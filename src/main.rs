@@ -5,6 +5,7 @@ use rand::Rng;
 // This code was made freely available by https://github.com/rust-lang/rust/tree/master/library/std
 use std::io;
 
+/// Prompts the user for input (on the same line) and returns the string entered after the user presses enter.
 fn get_input(prompt: &str) -> String {
     println!("{}", prompt);
     let mut input = String::new();
@@ -29,8 +30,6 @@ enum GameResult {
     Tie,
 }
 struct GameOutcome {
-    player_move: Move,
-    computer_move: Move,
     result: GameResult,
 }
 
@@ -53,21 +52,9 @@ fn main() {
                 print_help_banner();
             }
             "exit" => {
-                let percent_won = if past_games.len() == 0 {
-                    0.0
-                } else {
-                    // This could be a one-liner, but i need those iteration points.
-                    let mut past_game_win_count = 0;
-
-                    for game in past_games.iter() {
-                        if game.result == GameResult::Win {
-                            past_game_win_count += 1;
-                        }
-                    }
-
-                    past_game_win_count as f32 / past_games.len() as f32 * 100.0
-                };
-
+                // calculate the percentage of games won.
+                // Ensure that if the player won no games, they won 0% of games.
+                let percent_won = calculate_percentage_won(past_games);
                 println!(
                     "Thank you for playing! You won {:.2}% of the games.",
                     percent_won
@@ -75,36 +62,33 @@ fn main() {
                 break;
             }
             "rock" | "paper" | "scissors" => {
-                if past_games.len() == 0 {
-                    let computer_move = random_move();
-                    let player_move = str_to_move(&command);
+                let computer_move = random_move();
+                let player_move = str_to_move(&command);
 
-                    let winner = determine_winner(&player_move, &computer_move);
-                    let game_outcome = GameOutcome {
-                        player_move,
-                        computer_move,
-                        result: winner,
-                    };
+                let winner = determine_winner(&player_move, &computer_move);
+                let game_outcome = GameOutcome { result: winner };
 
-                    past_games.push(game_outcome);
-                    match winner {
-                        GameResult::Win => {
-                            println!(
-                                "You win! {} beats {}.",
-                                move_to_str(&player_move),
-                                move_to_str(&computer_move)
-                            );
-                        }
-                        GameResult::Loss => {
-                            println!(
-                                "You lose! {} beats {}.",
-                                move_to_str(&computer_move),
-                                move_to_str(&player_move)
-                            );
-                        }
-                        GameResult::Tie => {
-                            println!("You tied! You both chose {}.", move_to_str(&player_move));
-                        }
+                past_games.push(game_outcome);
+                match winner {
+                    GameResult::Win => {
+                        println!("The computer chose {}.", move_to_str(&computer_move));
+                        println!(
+                            "You win! {} beats {}.",
+                            capitalize_first_letter(move_to_str(&player_move)),
+                            move_to_str(&computer_move)
+                        );
+                    }
+                    GameResult::Loss => {
+                        println!("The computer chose {}.", move_to_str(&computer_move));
+                        println!(
+                            "You lose! {} beats {}.",
+                            capitalize_first_letter(move_to_str(&computer_move)),
+                            move_to_str(&player_move)
+                        );
+                    }
+                    GameResult::Tie => {
+                        println!("The computer chose {}.", move_to_str(&computer_move));
+                        println!("You tied! You both chose {}.", move_to_str(&player_move));
                     }
                 }
             }
@@ -144,6 +128,7 @@ fn random_move() -> Move {
     }
 }
 
+/// Convert a string move to a Move enum to improve performance (maybe since it's number comparison???)
 fn str_to_move(str: &String) -> Move {
     match str.to_lowercase().trim() {
         "rock" => Move::Rock,
@@ -152,12 +137,39 @@ fn str_to_move(str: &String) -> Move {
     }
 }
 
+/// Converts a Move enum member to a string so it can be printed nicely
 fn move_to_str(mv: &Move) -> String {
     match mv {
         Move::Rock => "rock".to_string(),
         Move::Paper => "paper".to_string(),
         Move::Scissors => "scissors".to_string(),
     }
+}
+
+/// Returns the string with the first letter capitalized
+fn capitalize_first_letter(str: String) -> String {
+    let mut chars = str.chars();
+
+    match chars.next() {
+        None => String::new(),
+        Some(next) => next.to_uppercase().collect::<String>() + chars.as_str(),
+    }
+}
+
+fn calculate_percentage_won(past_games: Vec<GameOutcome>) -> f32 {
+    if past_games.len() == 0 {
+        return 0.0;
+    }
+    // This could be a one-liner, but i need those iteration points.
+    let mut past_game_win_count = 0;
+
+    for game in past_games.iter() {
+        if game.result == GameResult::Win {
+            past_game_win_count += 1;
+        }
+    }
+
+    past_game_win_count as f32 / past_games.len() as f32 * 100.0
 }
 
 fn determine_winner(player_move: &Move, computer_move: &Move) -> GameResult {
