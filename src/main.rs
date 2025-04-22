@@ -63,13 +63,18 @@ fn main() {
                     "Thank you for playing! You won {:.2}% of the games (ignoring ties).",
                     percent_won
                 );
+                if percent_won > 60.0 {
+                    println!("You are a really lucky person.")
+                } else if percent_won < 40.0 {
+                    println!("You suck at rock paper scissors.")
+                }
                 break;
             }
             "rock" | "paper" | "scissors" => {
                 // if the computer winrate is lower than 50%, the player has probably figured out the computer's strategy, so go back to the random move strategy.
                 // Although, if only a few games have been played, its probably just a luck that the player is doing so well.
                 // (also handles the first move where there is no prior move).
-                let computer_move = if calculate_percentage_won(&past_games) < 0.5
+                let computer_move = if calculate_percentage_won(&past_games) < 50.0
                     && (past_games.len() > 5 || past_games.len() == 0)
                 {
                     random_move()
@@ -117,7 +122,7 @@ fn main() {
             }
 
             _ => {
-                println!("Invalid command. Please try again.");
+                println!("Invalid command/move. Please try again.");
             }
         }
 
@@ -138,7 +143,10 @@ fn print_help_banner() {
         "In Rock, Paper, Scissors, you can choose one of three moves: rock, paper, or scissors."
     );
     println!("Rock beats scissors, scissors beats paper, and paper beats rock.");
-    println!("You will play against the computer. The computer will get better over time.");
+    // encourage "randomness"
+    println!(
+        "You will play against the computer. The computer will try to predict your move, so try to play unpredictably."
+    );
 }
 
 fn random_move() -> Move {
@@ -204,6 +212,7 @@ fn capitalize_first_letter(str: String) -> String {
     }
 }
 
+/// returns the percent of games which the player has won (0-100)
 fn calculate_percentage_won(past_games: &Vec<GameOutcome>) -> f32 {
     let mut past_game_win_count = 0;
     let mut not_tie_games = 0;
