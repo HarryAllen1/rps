@@ -49,6 +49,7 @@ fn print_welcome() {
 fn main() {
     print_welcome();
 
+    // (this is the list; rust doesn’t use the standard bracket notation to create arrays and instead uses Vecs)
     // Storing the past moves allows the user to predict the next move based on the last item
     // and also allows it to generate game statistics.
     let mut past_games: Vec<GameOutcome> = Vec::new();
