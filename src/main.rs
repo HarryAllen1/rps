@@ -148,6 +148,9 @@ fn print_help_banner() {
     println!(
         "You will play against the computer. The computer will try to predict your move, so try to play unpredictably."
     );
+    println!(
+        "Although the computer can easily cheat (it knows your move before it plays its own, after all), I promise it doesn't cheat. Just trust me (and look at the program code)."
+    );
 }
 
 fn random_move() -> Move {
