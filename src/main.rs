@@ -51,6 +51,7 @@ fn main() {
 
     let mut past_games: Vec<GameOutcome> = Vec::new();
     loop {
+        // get the command from the user via the cli
         let command = get_input(
             "Please enter your move (rock, paper, or scissors), type \"help\" for help, or \"exit\" to exit: ",
         );
