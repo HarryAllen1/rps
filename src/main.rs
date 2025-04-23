@@ -37,15 +37,19 @@ struct GameOutcome {
     result: GameResult,
 }
 
-fn main() {
-    let mut past_games: Vec<GameOutcome> = Vec::new();
+fn print_welcome() {
     println!(
         "Welcome to {}, {}, {}!",
         "Rock".green().bold(),
         "Paper".yellow().bold(),
         "Scissors".cyan().bold()
     );
+}
 
+fn main() {
+    print_welcome();
+
+    let mut past_games: Vec<GameOutcome> = Vec::new();
     loop {
         let command = get_input(
             "Please enter your move (rock, paper, or scissors), type \"help\" for help, or \"exit\" to exit: ",
@@ -74,8 +78,9 @@ fn main() {
                 // if the computer winrate is lower than 50%, the player has probably figured out the computer's strategy, so go back to the random move strategy.
                 // Although, if only a few games have been played, its probably just a luck that the player is doing so well.
                 // (also handles the first move where there is no prior move).
-                let computer_move = if calculate_percentage_won(&past_games) < 50.0
-                    && (past_games.len() > 5 || past_games.len() == 0)
+                let computer_move = if (calculate_percentage_won(&past_games) > 55.0
+                    && past_games.len() > 5)
+                    || past_games.len() == 0
                 {
                     random_move()
                 } else {
@@ -133,12 +138,7 @@ fn main() {
 }
 
 fn print_help_banner() {
-    print!(
-        "Welcome to {}, {}, {}!",
-        "Rock".green().bold(),
-        "Paper".yellow().bold(),
-        "Scissors".cyan().bold()
-    );
+    print_welcome();
     println!(
         "In Rock, Paper, Scissors, you can choose one of three moves: rock, paper, or scissors."
     );
