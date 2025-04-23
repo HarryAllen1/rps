@@ -49,6 +49,8 @@ fn print_welcome() {
 fn main() {
     print_welcome();
 
+    // Storing the past moves allows the user to predict the next move based on the last item
+    // and also allows it to generate game statistics.
     let mut past_games: Vec<GameOutcome> = Vec::new();
     loop {
         // get the command from the user via the cli
