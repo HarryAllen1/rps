@@ -76,7 +76,7 @@ fn main() {
             }
             "rock" | "paper" | "scissors" => {
                 // if the computer winrate is lower than 50%, the player has probably figured out the computer's strategy, so go back to the random move strategy.
-                // Although, if only a few games have been played, its probably just a luck that the player is doing so well.
+                // Although, if only a few games have been played, its probably just sheer luck that the player is doing so well.
                 // (also handles the first move where there is no prior move).
                 let computer_move = if (calculate_percentage_won(&past_games) > 55.0
                     && past_games.len() > 5)
